@@ -6,6 +6,8 @@ import org.bitcoins.core.script.constant.ScriptOperation
 /** Created by chris on 1/6/16. */
 sealed trait ArithmeticOperation extends ScriptOperation
 
+sealed trait ArithmeticPredicateOperation extends ArithmeticOperation
+
 /** 1 is added to the input. */
 case object OP_1ADD extends ArithmeticOperation {
   override def opCode = 139
@@ -27,7 +29,6 @@ case object OP_ABS extends ArithmeticOperation {
 }
 
 /** If the input is 0 or 1, it is flipped. Otherwise the output will be 0. */
-
 case object OP_NOT extends ArithmeticOperation {
   override def opCode = 145
 }
@@ -58,7 +59,7 @@ case object OP_BOOLOR extends ArithmeticOperation {
 }
 
 /** Returns 1 if the numbers are equal, 0 otherwise. */
-case object OP_NUMEQUAL extends ArithmeticOperation {
+case object OP_NUMEQUAL extends ArithmeticPredicateOperation {
   override def opCode = 156
 }
 
@@ -68,27 +69,27 @@ case object OP_NUMEQUALVERIFY extends ArithmeticOperation {
 }
 
 /** Returns 1 if the numbers are not equal, 0 otherwise. */
-case object OP_NUMNOTEQUAL extends ArithmeticOperation {
+case object OP_NUMNOTEQUAL extends ArithmeticPredicateOperation {
   override def opCode = 158
 }
 
 /** Returns 1 if a is less than b, 0 otherwise. */
-case object OP_LESSTHAN extends ArithmeticOperation {
+case object OP_LESSTHAN extends ArithmeticPredicateOperation {
   override def opCode = 159
 }
 
 /** Returns 1 if a is greater than b, 0 otherwise. */
-case object OP_GREATERTHAN extends ArithmeticOperation {
+case object OP_GREATERTHAN extends ArithmeticPredicateOperation {
   override def opCode = 160
 }
 
 /** Returns 1 if a is less than or equal to b, 0 otherwise. */
-case object OP_LESSTHANOREQUAL extends ArithmeticOperation {
+case object OP_LESSTHANOREQUAL extends ArithmeticPredicateOperation {
   override def opCode = 161
 }
 
-/** 	Returns 1 if a is greater than or equal to b, 0 otherwise. */
-case object OP_GREATERTHANOREQUAL extends ArithmeticOperation {
+/** Returns 1 if a is greater than or equal to b, 0 otherwise. */
+case object OP_GREATERTHANOREQUAL extends ArithmeticPredicateOperation {
   override def opCode = 162
 }
 
@@ -135,20 +136,27 @@ case object OP_MOD extends ArithmeticOperation {
 }
 
 /** Shifts a left b bits, preserving sign. disabled. */
-case object  OP_LSHIFT extends ArithmeticOperation {
+case object OP_LSHIFT extends ArithmeticOperation {
   override def opCode = 152
 }
 
 /** Shifts a right b bits, preserving sign. disabled. */
-case object  OP_RSHIFT extends ArithmeticOperation {
+case object OP_RSHIFT extends ArithmeticOperation {
   override def opCode = 153
 }
 
 object ArithmeticOperation extends ScriptOperationFactory[ArithmeticOperation] {
-  override def operations = Seq(OP_0NOTEQUAL, OP_1ADD, OP_1SUB, OP_ABS, OP_ADD, OP_BOOLAND, OP_BOOLOR,
-    OP_GREATERTHAN, OP_GREATERTHANOREQUAL, OP_LESSTHAN, OP_LESSTHANOREQUAL, OP_MAX, OP_MIN, OP_NEGATE,
-    OP_NEGATE, OP_NOT, OP_NUMEQUAL, OP_NUMEQUALVERIFY, OP_NUMNOTEQUAL, OP_SUB, OP_WITHIN,
-    OP_2MUL,OP_2DIV,OP_MUL,OP_DIV, OP_MOD, OP_LSHIFT, OP_RSHIFT)
+  override def operations: Seq[ArithmeticOperation] = Seq(OP_BOOLAND, OP_BOOLOR, OP_0NOTEQUAL,
+    OP_1ADD, OP_1SUB, OP_ABS, OP_ADD, OP_MAX, OP_MIN, OP_NEGATE,
+    OP_NEGATE, OP_NOT, OP_NUMEQUALVERIFY, OP_SUB, OP_WITHIN,
+    OP_2MUL,OP_2DIV,OP_MUL,OP_DIV, OP_MOD, OP_LSHIFT, OP_RSHIFT) ++ ArithmeticPredicateOperation.operations
+}
+
+object ArithmeticPredicateOperation extends ScriptOperationFactory[ArithmeticPredicateOperation] {
+  override def operations: Seq[ArithmeticPredicateOperation] = Seq(OP_GREATERTHAN, OP_GREATERTHANOREQUAL,
+    OP_LESSTHAN, OP_LESSTHANOREQUAL, OP_NUMEQUAL, OP_NUMNOTEQUAL)
+
+
 }
 
 

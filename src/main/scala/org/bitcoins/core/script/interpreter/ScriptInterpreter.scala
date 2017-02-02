@@ -14,6 +14,7 @@ import org.bitcoins.core.script.control._
 import org.bitcoins.core.script.crypto._
 import org.bitcoins.core.script.flag._
 import org.bitcoins.core.script.locktime.{LockTimeInterpreter, OP_CHECKLOCKTIMEVERIFY, OP_CHECKSEQUENCEVERIFY}
+import org.bitcoins.core.script.oracle.{OP_TICKERQUERY, OracleInterpreter}
 import org.bitcoins.core.script.reserved._
 import org.bitcoins.core.script.result._
 import org.bitcoins.core.script.splice._
@@ -447,6 +448,11 @@ trait ScriptInterpreter extends CryptoInterpreter with StackInterpreter with Con
               }
               //in this case, just read OP_CSV just like a NOP and remove it from the stack
               else loop(ScriptProgram(p, p.script.tail, ScriptProgram.Script),calcOpCount(opCount,OP_CHECKSEQUENCEVERIFY))
+
+            //oracle operations
+            case OP_TICKERQUERY :: t =>
+              val newProgram = OracleInterpreter.opTickerQuery(p)
+              loop(newProgram, calcOpCount(opCount, OP_TICKERQUERY))
             //no more script operations to run, return whether the program is valid and the final state of the program
             case Nil => loop(ScriptProgram.toExecutedProgram(p),opCount)
             case h :: t => throw new RuntimeException(h + " was unmatched")

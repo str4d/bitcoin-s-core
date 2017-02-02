@@ -140,7 +140,7 @@ trait ScriptParser extends Factory[List[ScriptToken]] with BitcoinSLogger {
       //logger.debug("Byte to be parsed: " + bytes.headOption)
       bytes match {
         case h :: t =>
-          val op  = ScriptOperation(h).get
+          val op = ScriptOperation(h).get
           val parsingHelper : ParsingHelper[Byte] = parseOperationByte(op,accum,t)
           loop(parsingHelper.tail,parsingHelper.accum)
         case Nil => accum
@@ -151,13 +151,6 @@ trait ScriptParser extends Factory[List[ScriptToken]] with BitcoinSLogger {
   }
 
   private def parse(bytes : Seq[Byte]) : List[ScriptToken] = parse(bytes.toList)
-
-  /** Parses a redeem script from the given script token */
-  def parseRedeemScript(scriptToken : ScriptToken) : Try[List[ScriptToken]] = {
-    val redeemScript : Try[List[ScriptToken]] = Try(parse(scriptToken.bytes))
-    redeemScript
-  }
-
 
   /**
    * Slices the amount of bytes specified in the bytesToPushOntoStack parameter and then creates a script constant

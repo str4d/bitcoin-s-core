@@ -26,6 +26,7 @@ trait RawScriptSignatureParser extends RawBitcoinSerializer[ScriptSignature] wit
       val scriptSigBytes = bytes.slice(compactSizeUInt.size.toInt,
         compactSizeUInt.num.toInt + compactSizeUInt.size.toInt)
       val scriptTokens : List[ScriptToken] = ScriptParser.fromBytes(scriptSigBytes)
+      logger.debug("Parsed scriptTokens: " + scriptTokens)
       ScriptSignature.fromAsm(scriptTokens)
     }
   }
